@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\RAUL\Documents\python\backendTienda\venv"
+VIRTUAL_ENV="C:\Users\Usuario\Desktop\segundoParcialSI2\Sistema-de-gestion-de-ventas\backend\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

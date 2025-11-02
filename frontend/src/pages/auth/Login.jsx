@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, fetchUser, user } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
@@ -16,7 +16,8 @@ const Login = () => {
     try {
       const result = await login(form);
       if (result?.success) {
-        navigate('/products');
+        await fetchUser();
+        navigate('/dashboard');
       } else {
         setError('Usuario o contraseña incorrectos');
       }
