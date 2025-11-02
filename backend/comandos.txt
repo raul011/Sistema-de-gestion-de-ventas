@@ -18,6 +18,8 @@ py -3.11 -m venv venv
 
 python -m pip install --upgrade pip---instalar pip 
 
+pip freeze > requirements.txt
+
 pip install python-decouple django
 
 pip install scikit-learn
