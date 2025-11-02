@@ -17,6 +17,10 @@ import EditRoleView from './pages/roles/EditRoleView';
 import UsersView from './pages/usuarios/UsersView';
 import UserAdd from './pages/usuarios/UserAdd';
 import UserEdit from './pages/usuarios/UserEdit';
+import PermissionList from './pages/permisos/PermissionList';
+import PermissionEdit from './pages/permisos/PermissionEdit';
+import ProveedoresView from './pages/proveedores/ProveedoresView';
+import ProveedorAdd from './pages/proveedores/ProveedorAdd';
 
 import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
@@ -41,6 +45,10 @@ function App() {
           <Route path="users/ver" element={<UsersView />} />
           <Route path="users/add" element={<UserAdd />} />
           <Route path="users/edit/:id" element={<UserEdit />} />
+          <Route path="permissions/ver" element={<PermissionList />} />
+         <Route path="permissions/edit/:id" element={<PermissionEdit />} />
+         <Route path="proveedores/ver" element={<ProveedoresView />} />
+         <Route path="proveedores/add" element={<ProveedorAdd />} />
         </Route>
 
         <Route path="/products" element={<ProductsPage />} />

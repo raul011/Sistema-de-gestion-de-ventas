@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/payments/', include('payments.urls')),  # ← esta línea
     path('api/reviews/', include('reviews.urls')),  # <- esta línea
     path('api/roles/', include('roles.urls')),  # <-- Aquí
+    path('api/proveedores/', include('proveedores.urls')),
 ]
 
 from django.conf import settings
