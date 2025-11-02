@@ -14,9 +14,11 @@ export const AuthProvider = ({ children }) => {
   });
 
   // Obtener usuario autenticado
+  //esto es una funcion
   const fetchUser = useCallback(async () => {
     try {
       const res = await axios.get('/auth/user/');
+       console.log('Rol del usuario:', res.data);  // ✅ aquí ves el rol
       setUser(res.data);
     } catch (err) {
       console.error('[AUTH] Usuario no autenticado:', err.response?.data || err);
@@ -42,7 +44,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('accessToken', access);
       axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
       setAccessToken(access);
-
+      
       await fetchUser();
       return { success: true };
     } catch (err) {
@@ -60,7 +62,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, logout, fetchUser, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );
