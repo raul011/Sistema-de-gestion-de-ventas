@@ -1,264 +1,86 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { ShoppingCart, User, Menu, X, LogOut, Heart } from 'lucide-react';
+import { ShoppingCart, User, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { cartItems } = useCart();
   const navigate = useNavigate();
-  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-  const handleLogout = async () => {
-    setIsLoading(true);
-    try {
-      logout();
-      navigate('/login');
-      setIsMenuOpen(false);
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      logout();
-      navigate('/login');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (isDropdownOpen && !e.target.closest('.user-dropdown')) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isDropdownOpen]);
-
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location.pathname]);
-
   return (
-    <nav className="bg-gray-900 text-gray-100 shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="text-2xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-purple-500 rounded"
-            aria-label="Inicio"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Smart-Car
+    <nav className="bg-gray-900 text-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto flex justify-between items-center p-4">
+        {/* Logo */}
+        <Link to="/" className="text-2xl font-bold">
+          Smart-Car
+        </Link>
+
+        {/* Desktop navigation */}
+        <div className="hidden md:flex items-center space-x-6">
+          <Link to="/products" className="hover:text-purple-400">Productos</Link>
+          <Link to="/categories" className="hover:text-purple-400">Categorías</Link>
+          <Link to="/cart" className="relative hover:text-purple-400">
+            <ShoppingCart size={22} />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-purple-500 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/products"
-              className="hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2 py-1"
-            >
-              Productos
-            </Link>
-            <Link
-              to="/categories"
-              className="hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2 py-1"
-            >
-              Categorías
-            </Link>
-          </div>
-
-          {/* Desktop User Actions */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link
-              to="/wishlist"
-              className="relative hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label="Lista de deseos"
-            >
-              <Heart size={22} />
-            </Link>
-
-            <Link
-              to="/cart"
-              className="relative hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label="Carrito de compras"
-            >
-              <ShoppingCart size={22} />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-
-            {isAuthenticated ? (
-              <div className="relative user-dropdown">
-                <button
-                  className="flex items-center gap-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-                  aria-label="Menú de usuario"
-                  aria-haspopup="true"
-                  aria-expanded={isDropdownOpen}
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  <User size={22} />
-                  <span className="hidden lg:inline">{user?.username}</span>
-                </button>
-                {isDropdownOpen && (
-                  <div
-                    className="absolute right-0 mt-2 w-48 bg-gray-800 text-gray-100 rounded-md shadow-lg py-1 z-50 border border-gray-700"
-                    role="menu"
-                  >
-                    <Link
-                      to="/orders"
-                      className="block px-4 py-2 hover:bg-gray-700 focus:bg-gray-700 outline-none transition-colors"
-                      role="menuitem"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      Mis pedidos
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      disabled={isLoading}
-                      className="w-full text-left px-4 py-2 text-red-400 hover:bg-red-700 hover:text-white focus:bg-red-700 outline-none flex items-center transition-colors disabled:opacity-50"
-                      role="menuitem"
-                    >
-                      {isLoading ? (
-                        <span className="inline-block w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin mr-2"></span>
-                      ) : (
-                        <LogOut size={16} className="inline mr-2" />
-                      )}
-                      Cerrar sesión
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <Link
-                  to="/login"
-                  className="hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-3 py-1"
-                >
-                  Iniciar sesión
-                </Link>
-                <Link
-                  to="/register"
-                  className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                >
-                  Registrarse
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu icon */}
-          <div className="md:hidden flex items-center space-x-4">
-            <Link
-              to="/wishlist"
-              className="relative hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label="Lista de deseos"
-            >
-              <Heart size={22} />
-            </Link>
-            <Link
-              to="/cart"
-              className="relative hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label="Carrito de compras"
-            >
-              <ShoppingCart size={22} />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-100 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-              aria-expanded={isMenuOpen}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+          {isAuthenticated ? (
+            <div className="flex items-center space-x-3">
+              <span className="flex items-center gap-1">
+                <User size={18} /> {user?.username}
+              </span>
+              <button onClick={handleLogout} className="hover:text-red-400 flex items-center gap-1">
+                <LogOut size={18} /> Cerrar
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-3">
+              <Link to="/login" className="hover:text-purple-400">Login</Link>
+              <Link to="/register" className="bg-purple-500 px-3 py-1 rounded hover:bg-purple-600">Register</Link>
+            </div>
+          )}
         </div>
+
+        {/* Mobile menu toggle */}
+        <button
+          className="md:hidden"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? 'Cerrar' : 'Menu'}
+        </button>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-gray-800 text-gray-100 border-t py-4 shadow-lg">
-          <div className="container mx-auto px-4 flex flex-col space-y-3">
-            <Link
-              to="/products"
-              onClick={() => setIsMenuOpen(false)}
-              className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-            >
-              Productos
-            </Link>
-            <Link
-              to="/categories"
-              onClick={() => setIsMenuOpen(false)}
-              className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-            >
-              Categorías
-            </Link>
-            <Link
-              to="/deals"
-              onClick={() => setIsMenuOpen(false)}
-              className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-            >
-              Ofertas
-            </Link>
-
-            {isAuthenticated ? (
-              <>
-                <div className="font-medium pt-3 border-t border-gray-700">Hola, {user?.username}</div>
-                <Link
-                  to="/orders"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-                >
-                  Mis pedidos
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  disabled={isLoading}
-                  className="text-left py-2 text-red-400 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 rounded px-2 flex items-center transition-colors disabled:opacity-50"
-                >
-                  {isLoading ? (
-                    <span className="inline-block w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin mr-2"></span>
-                  ) : (
-                    <LogOut size={16} className="mr-2" />
-                  )}
-                  Cerrar sesión
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-                >
-                  Iniciar sesión
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="py-2 text-purple-500 hover:text-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-                >
-                  Registrarse
-                </Link>
-              </>
-            )}
-          </div>
+        <div className="md:hidden bg-gray-800 p-4 flex flex-col space-y-2">
+          <Link to="/products" onClick={() => setIsMenuOpen(false)}>Productos</Link>
+          <Link to="/categories" onClick={() => setIsMenuOpen(false)}>Categorías</Link>
+          <Link to="/cart" onClick={() => setIsMenuOpen(false)}>Carrito ({totalItems})</Link>
+          {isAuthenticated ? (
+            <>
+              <span>Hola, {user?.username}</span>
+              <button onClick={handleLogout} className="text-red-400">Cerrar sesión</button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
+              <Link to="/register" onClick={() => setIsMenuOpen(false)}>Register</Link>
+            </>
+          )}
         </div>
       )}
     </nav>
