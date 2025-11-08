@@ -26,6 +26,11 @@ class ProductListView(generics.ListAPIView):
         return queryset
 
 
+class ProductCreateView(generics.CreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Cambia a AllowAny si quieres público
+
 class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -37,6 +42,11 @@ class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]  # <--- Esto permite acceso público
     pagination_class = None  # ✅ Desactiva paginación también aquí
+
+class CategoryCreateView(generics.CreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]  # Cambia según tus necesidades
 
 class CategoryDetailView(generics.RetrieveAPIView):
     queryset = Category.objects.all()

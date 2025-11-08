@@ -1,3 +1,18 @@
+py -3.11 -m venv venv-----para crear un nuevo entorno virtual en el backend
+
+venv\Scripts\Activate.ps1-----para activar el entorno virtual
+
+pip install -r requirements.txt----para ejecutar el archivo donde esta todo lo requerido para que funcione el backend, este comando es para que lea ese archivo y lo que diga dentro de ese archivo lo va instalar
+
+python manage.py runserver---para levantar el servidor
+
+
+
+
+
+
+
+
 venv\Scripts\Activate.ps1----si estoy en powershell con ese comando activo el entorno virtual para el backend desde la carpeta del backend
 
 python manage.py runserver----comando para iniciar el servidor	

@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),  # <- esta línea
@@ -34,9 +36,11 @@ urlpatterns = [
     path('api/payments/', include('payments.urls')),  # ← esta línea
     path('api/reviews/', include('reviews.urls')),  # <- esta línea
     path('api/roles/', include('roles.urls')),  # <-- Aquí
+    path('api/proveedores/', include('proveedores.urls')),
+    path('api/products/', include('products.urls')),
+    path('api/compras/', include('compras.urls')),
+    path('api/ventas/', include('ventas.urls')),
 ]
 
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -14,7 +14,7 @@ const EditRoleView = () => {
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        const res = await api.get('/roles/permissions/');
+        const res = await api.get('/roles/permissions/ver/');
         setAllPermissions(res.data);
       } catch (err) {
         console.error(err);

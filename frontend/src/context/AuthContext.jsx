@@ -18,11 +18,13 @@ export const AuthProvider = ({ children }) => {
   const fetchUser = useCallback(async () => {
     try {
       const res = await axios.get('/auth/user/');
-       console.log('Rol del usuario:', res.data);  // ✅ aquí ves el rol
+       //console.log('Rol del usuario:', res.data.role);  // ✅ aquí ves el rol
       setUser(res.data);
+      return res.data; // ✅ retornamos los datos
     } catch (err) {
       console.error('[AUTH] Usuario no autenticado:', err.response?.data || err);
       logout(); // Limpiar si token ya no es válido
+      return null;
     }
   }, []);
 

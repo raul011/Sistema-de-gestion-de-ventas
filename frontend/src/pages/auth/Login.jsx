@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -16,8 +16,12 @@ const Login = () => {
     try {
       const result = await login(form);
       if (result?.success) {
-        await fetchUser();
-        navigate('/dashboard');
+        const currentUser = await fetchUser(); // obtiene el usuario actualizado
+        if (currentUser?.role === 'Cliente') {
+          navigate('/'); // página principal para clientes
+        } else {
+          navigate('/dashboard'); // dashboard para los demás roles
+        }
       } else {
         setError('Usuario o contraseña incorrectos');
       }

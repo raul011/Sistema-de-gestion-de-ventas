@@ -6,20 +6,27 @@ User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    role_id = serializers.IntegerField(write_only=True)  # agregamos role_id
+    role_id = serializers.IntegerField(write_only=True, required=False)  # ahora opcional
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'role_id')
 
     def create(self, validated_data):
-        role_id = validated_data.pop('role_id')  # sacamos role_id de los datos
+        # Si no viene role_id, asignamos el rol por defecto (Cliente)
+        role_id = validated_data.pop('role_id', None)  # None si no viene
+        if role_id is None:
+            # Buscamos el rol "Cliente" en tu modelo Role
+            cliente_role = Role.objects.get(name='Cliente')
+            role_id = cliente_role.id
+
+        # Creamos el usuario
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            role_id=role_id  # ⚡ asignamos directamente aquí
-        )   
+            role_id=role_id
+        )
         return user
 
 class UserSerializer(serializers.ModelSerializer):

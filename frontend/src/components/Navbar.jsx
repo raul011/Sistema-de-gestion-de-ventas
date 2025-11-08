@@ -10,34 +10,53 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalItems = cartItems.reduce((total, item) => total + item.cantidad, 0);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
+  // NavBar para clientes o visitantes
+  const ClientNav = () => (
+    <>
+      <Link to="/products" className="hover:text-purple-400">Productos</Link>
+      <Link to="/categories" className="hover:text-purple-400">Categorías</Link>
+      <Link to="/cart" className="relative hover:text-purple-400">
+        <ShoppingCart size={22} />
+        {totalItems > 0 && (
+          <span className="absolute -top-2 -right-2 bg-purple-500 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            {totalItems}
+          </span>
+        )}
+      </Link>
+    </>
+  );
+
+  // NavBar para Admin o Empleado
+  const AdminNav = () => (
+    <>
+      <Link to="/dashboard" className="hover:text-purple-400">Dasboard</Link>
+    </>
+  );
+
+  const rol = user?.role; // obtenemos el rol del usuario (Admin, Empleado, Cliente)
+
   return (
     <nav className="bg-gray-900 text-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center p-4">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold">
-          Smart-Car
-        </Link>
+        <Link to="/" className="text-2xl font-bold">Smart-Car</Link>
 
         {/* Desktop navigation */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link to="/products" className="hover:text-purple-400">Productos</Link>
-          <Link to="/categories" className="hover:text-purple-400">Categorías</Link>
-          <Link to="/cart" className="relative hover:text-purple-400">
-            <ShoppingCart size={22} />
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-purple-500 text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </Link>
+          {/* Mostrar ClientNav para visitantes o clientes */}
+          {(!isAuthenticated || rol === 'Cliente') && <ClientNav />}
 
+          {/* Mostrar AdminNav para Admin o Empleado */}
+          {isAuthenticated && (rol === 'Admin' || rol === 'Empleado') && <AdminNav />}
+
+          {/* Información de usuario / login */}
           {isAuthenticated ? (
             <div className="flex items-center space-x-3">
               <span className="flex items-center gap-1">
@@ -56,10 +75,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile menu toggle */}
-        <button
-          className="md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
+        <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           {isMenuOpen ? 'Cerrar' : 'Menu'}
         </button>
       </div>
@@ -67,9 +83,9 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-gray-800 p-4 flex flex-col space-y-2">
-          <Link to="/products" onClick={() => setIsMenuOpen(false)}>Productos</Link>
-          <Link to="/categories" onClick={() => setIsMenuOpen(false)}>Categorías</Link>
-          <Link to="/cart" onClick={() => setIsMenuOpen(false)}>Carrito ({totalItems})</Link>
+          {(!isAuthenticated || rol === 'Cliente') && <ClientNav />}
+          {isAuthenticated && (rol === 'Admin' || rol === 'Empleado') && <AdminNav />}
+
           {isAuthenticated ? (
             <>
               <span>Hola, {user?.username}</span>

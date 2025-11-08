@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     'payments',
     'reviews',
     'roles.apps.RolesConfig',  # <- usa la clase AppConfig aquí
+    'proveedores',
+    'compras',
+    'ventas',
 ]
 
 

@@ -30,8 +30,8 @@ const UserAdd = () => {
     setLoading(true);
     setError('');
     try {
-        console.log({ username, email, password, role_id: roleId });
-        console.log('Role ID:', roleId, typeof roleId);
+      console.log({ username, email, password, role_id: roleId });
+      console.log('Role ID:', roleId, typeof roleId);
       await api.post('/users/add/', {
         username,
         email,
@@ -46,50 +46,49 @@ const UserAdd = () => {
       setLoading(false);
     }
   };
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Agregar Usuario</h1>
+    <div className="p-6 bg-white">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800">Agregar Usuario</h1>
       <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
         <div>
-          <label>Usuario</label>
+          <label className="block mb-1 text-gray-700 font-medium">Usuario</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full border px-2 py-1 rounded"
+            className="w-full border border-gray-300 px-2 py-1 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
 
         <div>
-          <label>Email</label>
+          <label className="block mb-1 text-gray-700 font-medium">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border px-2 py-1 rounded"
+            className="w-full border border-gray-300 px-2 py-1 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
 
         <div>
-          <label>Contraseña</label>
+          <label className="block mb-1 text-gray-700 font-medium">Contraseña</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border px-2 py-1 rounded"
+            className="w-full border border-gray-300 px-2 py-1 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
 
         <div>
-          <label>Rol</label>
+          <label className="block mb-1 text-gray-700 font-medium">Rol</label>
           <select
             value={roleId}
             onChange={(e) => setRoleId(e.target.value)}
-            className="w-full border px-2 py-1 rounded"
+            className="w-full border border-gray-300 px-2 py-1 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           >
             <option value="">Selecciona un rol</option>
@@ -113,6 +112,7 @@ const UserAdd = () => {
       </form>
     </div>
   );
+
 };
 
 export default UserAdd;
