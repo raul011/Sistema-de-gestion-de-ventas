@@ -34,9 +34,18 @@ const Navbar = () => {
   );
 
   // NavBar para Admin o Empleado
-  const AdminNav = () => (
+  const AdminNav = ({ totalItems }) => (
     <>
-      <Link to="/dashboard" className="hover:text-purple-400">Dasboard</Link>
+      <Link to="/dashboard" className="hover:text-purple-400">Dashboard</Link>
+
+      <Link to="/dashboard/pages/carrito" className="relative hover:text-purple-400 ml-4">
+        <ShoppingCart size={22} />
+        {totalItems > 0 && (
+          <span className="absolute -top-2 -right-2 bg-purple-500 text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            {totalItems}
+          </span>
+        )}
+      </Link>
     </>
   );
 

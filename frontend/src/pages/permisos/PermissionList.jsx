@@ -24,7 +24,6 @@ const PermissionList = () => {
                 <thead className="bg-blue-600 text-white">
                     <tr>
                         <th className="border px-4 py-2 text-left">Nombre</th>
-                        <th className="border px-4 py-2 text-left">Código</th>
                         <th className="border px-4 py-2 text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -36,7 +35,6 @@ const PermissionList = () => {
                             className="hover:bg-blue-50 transition-colors duration-150"
                         >
                             <td className="border px-4 py-2 text-gray-800">{perm.name}</td>
-                            <td className="border px-4 py-2 text-gray-700">{perm.codename}</td>
                             <td className="border px-4 py-2 text-center space-x-2">
                                 <button
                                     className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"

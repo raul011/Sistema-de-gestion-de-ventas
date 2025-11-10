@@ -29,7 +29,13 @@ class ProductListView(generics.ListAPIView):
 class ProductCreateView(generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]  # Cambia a AllowAny si quieres público
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            print("❌ Errores de validación del serializer:", serializer.errors)
+        serializer.is_valid(raise_exception=True)
+        return super().create(request, *args, **kwargs)
 
 class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.all()

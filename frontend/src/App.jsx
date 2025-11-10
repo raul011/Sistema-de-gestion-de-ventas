@@ -39,6 +39,11 @@ import VentaDetail from './pages/ventas/VentaDetail';
 import AddVenta from './pages/ventas/AddVenta';
 import AddCompra from "./pages/compras/AddCompra";
 //import AddVenta from "./pages/ventas/AddVenta";
+import AddPermission from './pages/permisos/AddPermission';
+import ReportesPage from './pages/reportes/ReportesPage';
+import ReporteGenerar from './pages/reportes/ReporteGenerar';
+import ReporteList from './pages/reportes/ReporteList';
+import ComandoVozForm from './pages/reportes/ComandoVozForm';
 
 // <Route path="categories/edit/:id" element={<CategoryEdit />} />
 
@@ -73,6 +78,7 @@ function App() {
 
           <Route path="permissions/ver" element={<PermissionList />} />
           <Route path="permissions/edit/:id" element={<PermissionEdit />} />
+          <Route path="permissions/add" element={<AddPermission />} />
 
           <Route path="ventas/ver" element={<VentasView />} />
           <Route path="ventas/detalle/:id" element={<VentaDetail />} />
@@ -90,7 +96,7 @@ function App() {
 
           <Route path="categories" element={<CategoriesPage />} />
           <Route path="categories/add" element={<CategoryAdd />} />
-          
+
 
           {/* Compras */}
           <Route path="compras/ver" element={<ComprasView />} />
@@ -102,6 +108,12 @@ function App() {
           {/* Carrito */}
           <Route path="pages/carrito" element={<CartPage />} />
           {/*<Route path="pages/carrito/checkout" element={<Checkout />} />*/}
+
+          {/* === Reportes === */}
+          <Route path="reportes" element={<ReportesPage />} />         {/* Página principal de reportes */}
+          <Route path="reportes/generar" element={<ReporteGenerar />} />   {/* Generar reporte */}
+          <Route path="reportes/listar" element={<ReporteList />} />        {/* Listar reportes */}
+          <Route path="reportes/voz" element={<ComandoVozForm />} />       {/* Comandos de voz */}
 
         </Route>
 

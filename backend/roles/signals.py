@@ -13,30 +13,62 @@ def create_default_roles_permissions_and_user(sender, **kwargs):
 
     # Crear permisos por defecto
     perms = [
-        {'name': 'Ver productos', 'codename': 'view_products'},
-        {'name': 'Editar órdenes', 'codename': 'edit_orders'},
-        {'name': 'Ver órdenes', 'codename': 'view_orders'},
+        # Productos
+        'Ver productos', 'Agregar productos', 'Editar productos', 'Eliminar productos',
+        # Categorías
+        'Ver categorías', 'Agregar categorías', 'Editar categorías', 'Eliminar categorías',
+        # Compras
+        'Ver compras', 'Agregar compras', 'Editar compras', 'Eliminar compras',
+        # Ventas
+        'Ver ventas', 'Agregar ventas', 'Editar ventas', 'Eliminar ventas',
+        # Proveedores
+        'Ver proveedores', 'Agregar proveedores', 'Editar proveedores', 'Eliminar proveedores',
+        # Usuarios
+        'Ver usuarios', 'Agregar usuarios', 'Editar usuarios', 'Eliminar usuarios',
+        # Roles
+        'Ver roles', 'Agregar roles', 'Editar roles', 'Eliminar roles',
+        # Permisos
+        'Ver permisos', 'Agregar permisos', 'Editar permisos', 'Eliminar permisos',
+        # Reportes
+        'Ver reportes', 'Generar reportes'
     ]
-    for p in perms:
-        Permission.objects.get_or_create(name=p['name'], codename=p['codename'])
 
-    # Crear roles por defecto
+    # Crear permisos en la base de datos
+    for perm_name in perms:
+        Permission.objects.get_or_create(name=perm_name)
+
+    # Definir roles con sus permisos
     roles = [
-        {'name': 'Admin', 'perms': ['view_products', 'edit_orders', 'view_orders']},
-        {'name': 'Empleado', 'perms': ['view_products', 'view_orders']},
-        {'name': 'Cliente', 'perms': ['view_products']},
+        {
+            'name': 'SuperAdmin',
+            'perms': perms,  # todos los permisos
+        },
+        {
+            'name': 'Admin',
+            'perms': [p for p in perms if p not in ['Agregar roles', 'Agregar permisos']],
+        },
+        {
+            'name': 'Ayudante',
+            'perms': [
+                'Ver productos', 'Ver categorías', 'Ver compras',
+                'Ver ventas', 'Ver reportes', 'Ver proveedores'
+            ],
+        },
     ]
+
+    # Crear roles y asignar permisos
     for r in roles:
         role_obj, created = Role.objects.get_or_create(name=r['name'])
-        for codename in r['perms']:
-            perm = Permission.objects.get(codename=codename)
+        role_obj.permissions.clear()  # limpiar permisos antiguos
+        for perm_name in r['perms']:
+            perm = Permission.objects.get(name=perm_name)
             role_obj.permissions.add(perm)
 
-    # Crear un usuario por defecto para cada rol
+    # Crear usuarios por defecto para cada rol
     default_users = [
-        {'username': 'admin', 'email': 'admin@example.com', 'password': 'admin123', 'role': 'Admin', 'is_staff': True, 'is_superuser': True},
-        {'username': 'empleado', 'email': 'empleado@example.com', 'password': 'empleado123', 'role': 'Empleado'},
-        {'username': 'cliente', 'email': 'cliente@example.com', 'password': 'cliente123', 'role': 'Cliente'},
+        {'username': 'superadmin', 'email': 'superadmin@example.com', 'password': '12345678', 'role': 'SuperAdmin', 'is_staff': True, 'is_superuser': True},
+        {'username': 'admin', 'email': 'admin@example.com', 'password': '12345678', 'role': 'Admin'},
+        {'username': 'ayudante', 'email': 'ayudante@example.com', 'password': '12345678', 'role': 'Ayudante'},
     ]
 
     for u in default_users:

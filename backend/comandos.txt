@@ -39,277 +39,299 @@ pip install python-decouple django
 
 pip install scikit-learn
 
+
+python manage.py seed_all --number 50---para poblar toda la bd con un seed global
+
+python manage.py flush --noinput---para eliminar todos los registros de la bd
+
 																																
 
 
 
 
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
-import { ShoppingCart, User, Menu, X, LogOut, Heart } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // asegúrate de importar tu contexto
+import { useState } from 'react';
 
-const Navbar = () => {
-  const { user, isAuthenticated, logout } = useAuth();
-  const { cartItems } = useCart();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+const DashboardSidebar = () => {
+  const { user } = useAuth(); // obtenemos el usuario y su rol
+  // Estado para submenús
 
-  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
-
-  const handleLogout = async () => {
-    setIsLoading(true);
-    try {
-      logout();
-      navigate('/login');
-      setIsMenuOpen(false);
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      logout();
-      navigate('/login');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (isDropdownOpen && !e.target.closest('.user-dropdown')) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isDropdownOpen]);
-
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location.pathname]);
+  // Estado para submenús
+  const [usuariosOpen, setUsuariosOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false); // 👈 Este es el que falta
+  const [rolesOpen, setRolesOpen] = useState(false);
+  const [permisosOpen, setPermisosOpen] = useState(false);
+  const [proveedoresOpen, setProveedoresOpen] = useState(false);
+  const [comprasOpen, setComprasOpen] = useState(false);
+  const [productosOpen, setProductosOpen] = useState(false);
+  const [categoriasOpen, setCategoriasOpen] = useState(false);
+  const [ventasOpen, setVentasOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-900 text-gray-100 shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="text-2xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-purple-500 rounded"
-            aria-label="Inicio"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Smart-Car
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/products"
-              className="hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2 py-1"
-            >
-              Productos
-            </Link>
-            <Link
-              to="/categories"
-              className="hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2 py-1"
-            >
-              Categorías
-            </Link>
-          </div>
-
-          {/* Desktop User Actions */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link
-              to="/wishlist"
-              className="relative hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label="Lista de deseos"
-            >
-              <Heart size={22} />
-            </Link>
-
-            <Link
-              to="/cart"
-              className="relative hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label="Carrito de compras"
-            >
-              <ShoppingCart size={22} />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-
-            {isAuthenticated ? (
-              <div className="relative user-dropdown">
-                <button
-                  className="flex items-center gap-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-                  aria-label="Menú de usuario"
-                  aria-haspopup="true"
-                  aria-expanded={isDropdownOpen}
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  <User size={22} />
-                  <span className="hidden lg:inline">{user?.username}</span>
-                </button>
-                {isDropdownOpen && (
-                  <div
-                    className="absolute right-0 mt-2 w-48 bg-gray-800 text-gray-100 rounded-md shadow-lg py-1 z-50 border border-gray-700"
-                    role="menu"
-                  >
-                    <Link
-                      to="/orders"
-                      className="block px-4 py-2 hover:bg-gray-700 focus:bg-gray-700 outline-none transition-colors"
-                      role="menuitem"
-                      onClick={() => setIsDropdownOpen(false)}
-                    >
-                      Mis pedidos
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      disabled={isLoading}
-                      className="w-full text-left px-4 py-2 text-red-400 hover:bg-red-700 hover:text-white focus:bg-red-700 outline-none flex items-center transition-colors disabled:opacity-50"
-                      role="menuitem"
-                    >
-                      {isLoading ? (
-                        <span className="inline-block w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin mr-2"></span>
-                      ) : (
-                        <LogOut size={16} className="inline mr-2" />
-                      )}
-                      Cerrar sesión
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <Link
-                  to="/login"
-                  className="hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-3 py-1"
-                >
-                  Iniciar sesión
-                </Link>
-                <Link
-                  to="/register"
-                  className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                >
-                  Registrarse
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu icon */}
-          <div className="md:hidden flex items-center space-x-4">
-            <Link
-              to="/wishlist"
-              className="relative hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label="Lista de deseos"
-            >
-              <Heart size={22} />
-            </Link>
-            <Link
-              to="/cart"
-              className="relative hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label="Carrito de compras"
-            >
-              <ShoppingCart size={22} />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-100 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1"
-              aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-              aria-expanded={isMenuOpen}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
+    <aside className="w-64 bg-gray-800 text-gray-100 flex flex-col h-screen">
+      <div className="p-6 text-xl font-bold border-b border-gray-700">
+        Mi Panel
       </div>
 
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-gray-800 text-gray-100 border-t py-4 shadow-lg">
-          <div className="container mx-auto px-4 flex flex-col space-y-3">
-            <Link
-              to="/products"
-              onClick={() => setIsMenuOpen(false)}
-              className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-            >
-              Productos
-            </Link>
-            <Link
-              to="/categories"
-              onClick={() => setIsMenuOpen(false)}
-              className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-            >
-              Categorías
-            </Link>
-            <Link
-              to="/deals"
-              onClick={() => setIsMenuOpen(false)}
-              className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-            >
-              Ofertas
-            </Link>
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <Link
+          to="/dashboard"
+          className="block py-2 px-4 rounded hover:bg-gray-700 transition-colors"
+        >
+          Inicio
+        </Link>
 
-            {isAuthenticated ? (
-              <>
-                <div className="font-medium pt-3 border-t border-gray-700">Hola, {user?.username}</div>
+        {/* Solo Admin */}
+        {user?.role === 'Admin' && (
+          <>
+            {/* Usuarios */}
+            <div>
+              <button
+                onClick={() => setUsuariosOpen(!usuariosOpen)}
+                className="w-full text-left py-2 px-4 rounded hover:bg-gray-700 flex justify-between items-center transition-colors"
+              >
+                Usuarios
+                <span className={`transform transition-transform ${usuariosOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+              </button>
+              {usuariosOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link to="/dashboard/users/add" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Agregar
+                  </Link>
+                  <Link to="/dashboard/users/delete" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Eliminar
+                  </Link>
+                  <Link to="/dashboard/users/ver" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Ver
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Roles */}
+            <div>
+              <button
+                onClick={() => setRolesOpen(!rolesOpen)}
+                className="w-full text-left py-2 px-4 rounded hover:bg-gray-700 flex justify-between items-center transition-colors"
+              >
+                Roles
+                <span className={`transform transition-transform ${rolesOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+              </button>
+              {rolesOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link to="/dashboard/roles/add" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Agregar
+                  </Link>
+
+                  <Link to="/dashboard/roles/delete" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Eliminar
+                  </Link>
+                  <Link to="/dashboard/roles/ver" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Ver
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Carrito */}
+            <div>
+              <button
+                onClick={() => setCartOpen(!cartOpen)}
+                className="w-full text-left py-2 px-4 rounded hover:bg-gray-700 flex justify-between items-center transition-colors"
+              >
+                Carrito
+                <span className={`transform transition-transform ${cartOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+              </button>
+
+              {cartOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link
+                    to="/dashboard/pages/carrito"
+                    className="block py-1 px-2 rounded hover:bg-gray-700"
+                  >
+                    Ver carrito
+                  </Link>
+
+                  <Link
+                    to="/dashboard/pages/carrito/checkout"
+                    className="block py-1 px-2 rounded hover:bg-gray-700"
+                  >
+                    Proceder al pago
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Permisos */}
+            <div>
+              <button
+                onClick={() => setPermisosOpen(!permisosOpen)}
+                className="w-full text-left py-2 px-4 rounded hover:bg-gray-700 flex justify-between items-center transition-colors"
+              >
+                Permisos
+                <span className={`transform transition-transform ${permisosOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+              </button>
+              {permisosOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link to="/dashboard/permissions/ver" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Ver
+                  </Link>
+                  <Link to="/dashboard/permissions/add" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Agregar
+                  </Link>
+                  <Link to="/dashboard/permissions/delete" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Eliminar
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Proveedores */}
+            <div>
+              <button
+                onClick={() => setProveedoresOpen(!proveedoresOpen)}
+                className="w-full text-left py-2 px-4 rounded hover:bg-gray-700 flex justify-between items-center transition-colors"
+              >
+                Proveedores
+                <span className={`transform transition-transform ${proveedoresOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+              </button>
+              {proveedoresOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link to="/dashboard/proveedores/ver" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Ver
+                  </Link>
+                  <Link to="/dashboard/proveedores/add" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Agregar
+                  </Link>
+                  <Link to="/dashboard/proveedores/delete" className="block py-1 px-2 rounded hover:bg-gray-700">
+                    Eliminar
+                  </Link>
+
+                </div>
+              )}
+            </div>
+
+            {/* Compras */}
+            <div>
+              <button
+                onClick={() => setComprasOpen(!comprasOpen)}
+                className="w-full text-left py-2 px-4 rounded hover:bg-gray-700 flex justify-between items-center transition-colors"
+              >
+                Compras
+                <span className={`transform transition-transform ${comprasOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+              </button>
+              {comprasOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link
+                    to="/dashboard/compras/ver"
+                    className="block py-1 px-2 rounded hover:bg-gray-700"
+                  >
+                    Ver
+                  </Link>
+                  <Link
+                    to="/dashboard/products"
+                    className="block py-1 px-2 rounded hover:bg-gray-700"
+                  >
+                    Agregar
+                  </Link>
+                  {/* Editar no se pone aquí porque requiere un ID */}
+                  {/* Detalle tampoco se pone aquí porque depende de la compra seleccionada */}
+                </div>
+              )}
+            </div>
+            {/* Botón Ventas */}
+            <button
+              onClick={() => setVentasOpen(!ventasOpen)}
+              className="w-full text-left px-4 py-2 rounded hover:bg-gray-700 flex justify-between items-center"
+            >
+              Ventas
+              <span className={`transform transition-transform ${ventasOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+            </button>
+
+            {/* Submenú Ventas */}
+            {ventasOpen && (
+              <div className="ml-4 mt-1 space-y-1">
                 <Link
-                  to="/orders"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
+                  to="/dashboard/ventas/ver"
+                  className="block py-1 px-2 rounded hover:bg-gray-700"
                 >
-                  Mis pedidos
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  disabled={isLoading}
-                  className="text-left py-2 text-red-400 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 rounded px-2 flex items-center transition-colors disabled:opacity-50"
-                >
-                  {isLoading ? (
-                    <span className="inline-block w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin mr-2"></span>
-                  ) : (
-                    <LogOut size={16} className="mr-2" />
-                  )}
-                  Cerrar sesión
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="py-2 hover:text-purple-400 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
-                >
-                  Iniciar sesión
+                  Ver
                 </Link>
                 <Link
-                  to="/register"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="py-2 text-purple-500 hover:text-purple-700 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 rounded px-2"
+                  to="/dashboard/products"
+                  className="block py-1 px-2 rounded hover:bg-gray-700"
                 >
-                  Registrarse
+                  Agregar
                 </Link>
-              </>
+                {/* Editar o Detalle no se pone aquí porque requiere un ID */}
+              </div>
             )}
-          </div>
-        </div>
-      )}
-    </nav>
+
+            {/* Productos */}
+            <div>
+              <button
+                onClick={() => setProductosOpen(!productosOpen)}
+                className="w-full text-left py-2 px-4 rounded hover:bg-gray-700 flex justify-between items-center transition-colors"
+              >
+                Productos
+                <span className={`transform transition-transform ${productosOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+              </button>
+              {productosOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link
+                    to="/dashboard/products"
+                    className="block py-1 px-2 rounded hover:bg-gray-700"
+                  >
+                    Ver
+                  </Link>
+                  <Link
+                    to="/dashboard/products/add"
+                    className="block py-1 px-2 rounded hover:bg-gray-700"
+                  >
+                    Agregar
+                  </Link>
+                  {/* Editar y Detalle no se ponen aquí porque requieren un ID */}
+                </div>
+              )}
+            </div>
+
+            {/* Categorías */}
+            <div>
+              <button
+                onClick={() => setCategoriasOpen(!categoriasOpen)}
+                className="w-full text-left py-2 px-4 rounded hover:bg-gray-700 flex justify-between items-center transition-colors"
+              >
+                Categorías
+                <span className={`transform transition-transform ${categoriasOpen ? 'rotate-180' : 'rotate-0'}`}>&#9660;</span>
+              </button>
+              {categoriasOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link
+                    to="/dashboard/categories"
+                    className="block py-1 px-2 rounded hover:bg-gray-700"
+                  >
+                    Ver
+                  </Link>
+                  <Link
+                    to="/dashboard/categories/add"
+                    className="block py-1 px-2 rounded hover:bg-gray-700"
+                  >
+                    Agregar
+                  </Link>
+                  {/* Editar y Detalle no se ponen aquí porque requieren un ID */}
+                </div>
+              )}
+            </div>
+
+
+
+          </>
+        )}
+      </nav>
+    </aside>
   );
 };
 
-export default Navbar;
-
+export default DashboardSidebar;

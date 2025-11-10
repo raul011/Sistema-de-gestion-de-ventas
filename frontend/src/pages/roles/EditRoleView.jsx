@@ -61,25 +61,26 @@ const EditRoleView = () => {
   };
 
   if (loading) return <p>Cargando...</p>;
-
   return (
-    <div className="p-6">
+    <div className="p-6 text-gray-900">
       <h1 className="text-2xl font-bold mb-4">Editar Rol</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label>Nombre del rol</label>
+          <label className="block mb-1 font-semibold">Nombre del rol</label>
           <input
             type="text"
             value={name}
             onChange={e => setName(e.target.value)}
-            className="border p-2 w-full"
+            className="border p-2 w-full text-gray-900 placeholder-gray-500"
+            placeholder="Ingresa el nombre del rol"
           />
         </div>
+
         <div>
-          <label>Permisos</label>
+          <label className="block mb-1 font-semibold">Permisos</label>
           <div className="flex flex-col space-y-1">
             {allPermissions.map(p => (
-              <label key={p.id}>
+              <label key={p.id} className="text-gray-900">
                 <input
                   type="checkbox"
                   checked={permissions.includes(p.id)}
@@ -91,6 +92,7 @@ const EditRoleView = () => {
             ))}
           </div>
         </div>
+
         <button
           type="submit"
           className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
@@ -100,6 +102,7 @@ const EditRoleView = () => {
       </form>
     </div>
   );
+
 };
 
 export default EditRoleView;

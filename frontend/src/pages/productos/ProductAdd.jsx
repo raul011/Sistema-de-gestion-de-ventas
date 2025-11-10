@@ -31,9 +31,10 @@ const ProductAdd = () => {
       const formData = new FormData();
       formData.append('name', name);
       formData.append('description', description);
-      formData.append('price', price);
-      formData.append('stock', stock);
-      formData.append('category', category);
+      formData.append('precio_compra', 0);
+      formData.append('precio_venta', 0);
+      formData.append('stock', 0);
+      formData.append('category_id', category);
       if (image) formData.append('image', image);
 
       await api.post('/products/add/', formData, {
@@ -69,26 +70,6 @@ const ProductAdd = () => {
           className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
           required
         />
-
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            type="number"
-            placeholder="Precio"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
-            required
-          />
-
-          <input
-            type="number"
-            placeholder="Stock"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
-            required
-          />
-        </div>
 
         <select
           value={category}

@@ -3,6 +3,8 @@ import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 // Subcomponentes
 const EmptyCart = () => (
@@ -122,47 +124,50 @@ const CartItem = ({ item, isUpdating, isRemoving, handleIncrease, handleDecrease
   </div>
 );
 
-const OrderSummary = ({ subtotal, shipping, total, totalItems }) => (
-  <div className="bg-gray-800 text-gray-100 rounded-lg shadow-sm p-6 sticky top-4">
-    <h2 className="text-xl font-bold mb-4">Resumen del pedido</h2>
-    <div className="space-y-3 mb-6">
-      <div className="flex justify-between">
-        <span className="text-gray-400">Subtotal ({totalItems} {totalItems === 1 ? 'producto' : 'productos'})</span>
-        <span className="font-medium">${subtotal.toFixed(2)}</span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-gray-400">Envío</span>
-        <span className="font-medium">
-          {shipping === 0 ? 'Gratis' : `$${shipping.toFixed(2)}`}
-        </span>
-      </div>
-      {shipping === 0 ? (
-        <div className="text-sm text-purple-400">
-          ¡Envío gratis en compras mayores a $50!
+const OrderSummary = ({ subtotal, shipping, total, totalItems }) => {
+  const { user } = useAuth(); // o el hook/context que uses para saber si hay usuario
+  return (
+    <div className="bg-gray-800 text-gray-100 rounded-lg shadow-sm p-6 sticky top-4">
+      <h2 className="text-xl font-bold mb-4">Resumen del pedido</h2>
+      <div className="space-y-3 mb-6">
+        <div className="flex justify-between">
+          <span className="text-gray-400">Subtotal ({totalItems} {totalItems === 1 ? 'producto' : 'productos'})</span>
+          <span className="font-medium">${subtotal.toFixed(2)}</span>
         </div>
-      ) : (
-        <div className="text-sm text-gray-400">
-          Faltan ${(50 - subtotal).toFixed(2)} para envío gratis
+        <div className="flex justify-between">
+          <span className="text-gray-400">Envío</span>
+          <span className="font-medium">
+            {shipping === 0 ? 'Gratis' : `$${shipping.toFixed(2)}`}
+          </span>
         </div>
-      )}
-      <div className="border-t border-gray-700 pt-3 mt-3 flex justify-between">
-        <span className="font-bold">Total</span>
-        <span className="font-bold text-lg text-purple-400">${total.toFixed(2)}</span>
+        {shipping === 0 ? (
+          <div className="text-sm text-purple-400">
+            ¡Envío gratis en compras mayores a $50!
+          </div>
+        ) : (
+          <div className="text-sm text-gray-400">
+            Faltan ${(50 - subtotal).toFixed(2)} para envío gratis
+          </div>
+        )}
+        <div className="border-t border-gray-700 pt-3 mt-3 flex justify-between">
+          <span className="font-bold">Total</span>
+          <span className="font-bold text-lg text-purple-400">${total.toFixed(2)}</span>
+        </div>
+      </div>
+      <Link
+        to={user ? "/checkout" : "/login"} // <-- modificar esta línea
+        className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
+      >
+        Proceder al pago
+      </Link>
+      <div className="mt-6 text-sm text-gray-400">
+        <p>
+          Al realizar tu compra, aceptas nuestros <Link to="/terms" className="text-purple-400 hover:underline">términos y condiciones</Link> y <Link to="/privacy" className="text-purple-400 hover:underline">política de privacidad</Link>.
+        </p>
       </div>
     </div>
-    <Link
-      to="/checkout"
-      className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
-    >
-      Proceder al pago
-    </Link>
-    <div className="mt-6 text-sm text-gray-400">
-      <p>
-        Al realizar tu compra, aceptas nuestros <Link to="/terms" className="text-purple-400 hover:underline">términos y condiciones</Link> y <Link to="/privacy" className="text-purple-400 hover:underline">política de privacidad</Link>.
-      </p>
-    </div>
-  </div>
-);
+  );
+};
 
 const Cart = () => {
   const {

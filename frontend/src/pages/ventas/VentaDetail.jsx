@@ -36,9 +36,12 @@ const VentaDetail = () => {
             <th className="border px-4 py-2 text-right">Subtotal</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-gray-800"> {/* Hace el texto oscuro */}
           {venta.detalles.map((detalle) => (
-            <tr key={detalle.id} className="hover:bg-gray-100 transition-colors duration-150">
+            <tr
+              key={detalle.id}
+              className="hover:bg-gray-100 transition-colors duration-150"
+            >
               <td className="border px-4 py-2">{detalle.producto.name}</td>
               <td className="border px-4 py-2 text-center">{detalle.cantidad}</td>
               <td className="border px-4 py-2 text-right">${detalle.precio_unitario}</td>

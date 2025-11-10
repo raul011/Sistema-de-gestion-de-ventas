@@ -41,7 +41,7 @@ const CartItem = ({ item, handleIncrease, handleDecrease, handleRemove }) => (
     </div>
 
     {/* Precio */}
-    <div className="md:col-span-2 flex justify-center items-center">${item.price.toFixed(2)}</div>
+    <span>${(item.price * item.cantidad).toFixed(2)}</span>
 
     {/* Cantidad */}
     <div className="md:col-span-2 flex justify-center items-center gap-2">

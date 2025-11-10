@@ -4,7 +4,7 @@ from .models import Role, Permission
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
-        fields = ['id', 'name', 'codename']
+        fields = ['id', 'name']
 
 class RoleSerializer(serializers.ModelSerializer):
     permissions = PermissionSerializer(many=True)  # Incluir permisos dentro del rol

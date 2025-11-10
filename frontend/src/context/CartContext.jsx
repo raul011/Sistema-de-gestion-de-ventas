@@ -41,7 +41,7 @@ export const CartProvider = ({ children }) => {
       const existing = prev.find(item => item.id === product.id);
 
       if (existing) {
-        return prev.map(item =>
+        const updatedCart = prev.map(item =>
           item.id === product.id
             ? {
               ...item,
@@ -49,14 +49,21 @@ export const CartProvider = ({ children }) => {
             }
             : item
         );
+
+        console.log("Producto ya en carrito, carrito actualizado:", updatedCart);
+        return updatedCart;
       }
-      return [...prev, {
+
+      const newItem = {
         ...product,
-        price: parseFloat(product.price), // ✅ Asegura que sea número
+        price: parseFloat(product.precio_venta), // ✅ Asegura que sea número
         quantity: Math.min(quantity, product.stock || Infinity),
         addedAt: new Date().toISOString()
-      }];
+      };
 
+      console.log("Nuevo producto agregado al carrito:", newItem);
+
+      return [...prev, newItem];
     });
   }, []);
 
@@ -118,6 +125,7 @@ export const CartProvider = ({ children }) => {
   return (
     <CartContext.Provider
       value={{
+        setCartItems,
         cartItems: sortedCartItems,
         cartTotal,
         itemCount,

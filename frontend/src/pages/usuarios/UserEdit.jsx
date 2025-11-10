@@ -48,40 +48,39 @@ const UserEdit = () => {
             console.error('Error al editar usuario:', err);
         }
     };
-
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 bg-black-100 rounded shadow">
-            <h2 className="text-2xl font-bold mb-4">Editar Usuario</h2>
+        <div className="max-w-md mx-auto mt-10 p-6 bg-gray-100 rounded shadow">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">Editar Usuario</h2>
 
             {error && <p className="text-red-500 mb-4">{error}</p>}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium mb-1">Nombre de usuario</label>
+                    <label className="block text-sm font-medium mb-1 text-gray-800">Nombre de usuario</label>
                     <input
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+                        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 text-gray-900"
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium mb-1">Correo electrónico</label>
+                    <label className="block text-sm font-medium mb-1 text-gray-800">Correo electrónico</label>
                     <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+                        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 text-gray-900"
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium mb-1">Rol</label>
+                    <label className="block text-sm font-medium mb-1 text-gray-800">Rol</label>
                     <select
                         value={roleId}
                         onChange={(e) => setRoleId(e.target.value)}
-                        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+                        className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 text-gray-900"
                     >
                         <option value="">Selecciona un rol</option>
                         {roles.map((r) => (
@@ -101,6 +100,7 @@ const UserEdit = () => {
             </form>
         </div>
     );
+
 };
 
 export default UserEdit;

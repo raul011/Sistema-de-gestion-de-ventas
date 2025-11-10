@@ -7,7 +7,6 @@ const PermissionEdit = () => {
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
-  const [codename, setCodename] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -16,8 +15,7 @@ const PermissionEdit = () => {
     const fetchPermission = async () => {
       try {
         const res = await api.get(`/roles/permissions/${id}/`);
-        setName(res.data.name);
-        setCodename(res.data.codename);
+        setName(res.data.name || '');
       } catch (err) {
         console.error(err);
         setError('No se pudo cargar el permiso.');
@@ -34,7 +32,7 @@ const PermissionEdit = () => {
     setError('');
 
     try {
-      await api.put(`/roles/permissions/${id}/edit/`, { name, codename });
+      await api.put(`/roles/permissions/${id}/edit/`, { name });
       navigate('/dashboard/permissions/ver');
     } catch (err) {
       console.error(err);
@@ -45,30 +43,36 @@ const PermissionEdit = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 max-w-md mx-auto">
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+    <div className="max-w-md mx-auto mt-10 p-6 bg-gray-100 rounded-xl shadow-md">
+      <h2 className="text-2xl font-bold mb-4 text-gray-900 text-center">
+        Editar Permiso
+      </h2>
 
-      <label className="block mb-2">Nombre</label>
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="w-full p-2 mb-4 border rounded"
-      />
+      {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
-      <label className="block mb-2">Código</label>
-      <input
-        value={codename}
-        onChange={(e) => setCodename(e.target.value)}
-        className="w-full p-2 mb-4 border rounded"
-      />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold mb-1 text-gray-800">
+            Nombre del permiso
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+            placeholder="Ingresa el nombre del permiso"
+          />
+        </div>
 
-      <button
-        type="submit"
-        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-      >
-        {loading ? 'Guardando...' : 'Guardar cambios'}
-      </button>
-    </form>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition disabled:opacity-70"
+        >
+          {loading ? 'Guardando...' : 'Guardar cambios'}
+        </button>
+      </form>
+    </div>
   );
 };
 

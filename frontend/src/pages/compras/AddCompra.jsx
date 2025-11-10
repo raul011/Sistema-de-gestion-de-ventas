@@ -5,12 +5,13 @@ import api from "../../api/axios";
 import { toast } from "react-toastify";
 
 const AddCompra = () => {
-    const { cartItems, removeFromCart } = useCart();
+    const { cartItems, removeFromCart, setCartItems } = useCart(); // usamos setCartItems
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const [proveedores, setProveedores] = useState([]);
     const [selectedProveedor, setSelectedProveedor] = useState("");
 
+    // Subtotal recalculado según los precios actuales del carrito
     const subtotal = useMemo(() => {
         return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
     }, [cartItems]);
@@ -19,7 +20,7 @@ const AddCompra = () => {
     useEffect(() => {
         const fetchProveedores = async () => {
             try {
-                const res = await api.get("/proveedores/ver/"); // Ajusta la ruta según tu backend
+                const res = await api.get("/proveedores/ver/");
                 setProveedores(res.data.results);
             } catch (err) {
                 console.error("Error cargando proveedores:", err);
@@ -27,6 +28,15 @@ const AddCompra = () => {
         };
         fetchProveedores();
     }, []);
+
+    // Función para actualizar el precio de un producto
+    const handlePriceChange = (index, newPrice) => {
+        setCartItems(prev =>
+            prev.map((item, i) =>
+                i === index ? { ...item, price: parseFloat(newPrice) || 0 } : item
+            )
+        );
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,8 +51,10 @@ const AddCompra = () => {
                 cantidad: item.quantity,
                 precio_unitario: item.price,
             }));
-            console.log({ proveedor:  Number(selectedProveedor), detalles });
+
+            console.log({ proveedor: Number(selectedProveedor), detalles });
             await api.post("/compras/crear/", { proveedor: selectedProveedor, detalles });
+
             toast.success("Compra creada correctamente");
             cartItems.forEach((item) => removeFromCart(item.id));
             navigate("/dashboard/compras/ver");
@@ -76,33 +88,56 @@ const AddCompra = () => {
                         className="w-full p-3 border rounded-lg bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="">Selecciona un proveedor</option>
-                        {Array.isArray(proveedores) && proveedores.map((p) => (
-                            <option key={p.id} value={p.id}>
-                                {p.nombre}
-                            </option>
-                        ))}
+                        {Array.isArray(proveedores) &&
+                            proveedores.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                    {p.nombre}
+                                </option>
+                            ))}
                     </select>
                 </div>
 
-                {/* Lista de productos */}
+                {/* Lista de productos con input de precio */}
                 <div className="space-y-4">
-                    {cartItems.map((item) => (
+                    {cartItems.map((item, index) => (
                         <div
                             key={item.id}
-                            className="flex justify-between items-center p-4 border rounded-lg bg-gray-50"
+                            className="flex justify-between items-center p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition"
                         >
                             <div>
                                 <p className="font-medium text-gray-800">{item.name}</p>
                                 <p className="text-gray-500 text-sm">Cantidad: {item.quantity}</p>
                             </div>
-                            <div className="text-gray-800 font-semibold">
-                                ${(item.price * item.quantity).toFixed(2)}
+
+                            <div className="flex items-center gap-4">
+                                {/* Input de precio */}
+                                <div className="flex flex-col">
+                                    <label className="text-gray-700 text-xs mb-1">Precio</label>
+                                    <input
+                                        type="number"
+                                        value={item.price}
+                                        min="0"
+                                        step="0.01"
+                                        onChange={(e) =>
+                                            handlePriceChange(index, e.target.value)
+                                        }
+                                        className="w-28 p-2 border rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+
+                                {/* Subtotal del producto */}
+                                <div className="flex flex-col items-end">
+                                    <span className="text-gray-800 font-semibold">
+                                        ${(item.price * item.quantity).toFixed(2)}
+                                    </span>
+                                    <span className="text-gray-400 text-xs">Subtotal</span>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                {/* Subtotal */}
+                {/* Subtotal general */}
                 <div className="flex justify-between items-center text-lg font-bold text-gray-900 border-t pt-4">
                     <span>Subtotal</span>
                     <span>${subtotal.toFixed(2)}</span>
