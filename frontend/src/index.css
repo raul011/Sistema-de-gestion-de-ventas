@@ -1,0 +1,12 @@
+@import "tailwindcss";
+/* src/styles/main.css */
+
+body {
+    background-color: #111827;
+    /* Fondo oscuro exacto de bg-gray-900 */
+    color: #f9fafb;
+    /* Texto claro exacto de text-gray-100 */
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    /* Asegúrate de usar una fuente consistente */
+}

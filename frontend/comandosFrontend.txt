@@ -1,0 +1,3 @@
+npm install----instalar todas las dependencias
+npm run dev----levantar tu frontend
+
