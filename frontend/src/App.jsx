@@ -125,7 +125,7 @@ function App() {
         <Route path="/categories" element={<CategoriesPage />} />
         <Route
 
-
+        
           path="/checkout"
           element={
             <Elements stripe={stripePromise}>
@@ -136,7 +136,7 @@ function App() {
         <Route path="/checkout-success" element={<CheckoutSuccess />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/orders" element={<Orders />} />
-
+        <Route path="/compras/add/:id" element={<CompraAdd />} />
         {/* Auth */}
         <Route
           path="/login"

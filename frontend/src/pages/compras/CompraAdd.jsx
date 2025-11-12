@@ -51,7 +51,7 @@ const CompraAdd = () => {
 
     try {
       console.log("Datos enviados:", data);
-      await api.post("/compras/crear/", data);
+      await api.post("/compras/crear/cliente", data);
       alert("Compra registrada con éxito!");
       navigate("/dashboard/compras");
     } catch (err) {

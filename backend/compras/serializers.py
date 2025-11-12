@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Compra, DetalleCompra
 from products.serializers import ProductSerializer
 from decimal import Decimal
+from ventas.models import Venta, DetalleVenta
 
 class DetalleCompraSerializer(serializers.ModelSerializer):
     producto = ProductSerializer(read_only=True)
@@ -46,3 +47,39 @@ class CompraSerializer(serializers.ModelSerializer):
 
         compra.calcular_total()  # actualizar total después de crear detalles
         return compra
+    
+
+    
+    
+class DetalleVentaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetalleVenta
+        fields = ['producto', 'cantidad', 'precio_unitario']
+
+class VentaSerializer(serializers.ModelSerializer):
+    detalles = DetalleVentaSerializer(many=True)
+    cliente_nombre = serializers.CharField(source='cliente.username', read_only=True)
+
+    class Meta:
+        model = Venta
+        fields = ['id', 'cliente', 'cliente_nombre', 'fecha', 'total', 'detalles']
+
+    def create(self, validated_data):
+        detalles_data = validated_data.pop('detalles')
+        venta = Venta.objects.create(**validated_data)
+
+        for detalle in detalles_data:
+            detalle_obj = DetalleVenta.objects.create(venta=venta, **detalle)
+
+            # Actualizar stock del producto
+            producto = detalle_obj.producto
+            if producto.stock < detalle_obj.cantidad:
+                raise serializers.ValidationError(f"No hay suficiente stock para {producto.name}")
+            producto.stock -= detalle_obj.cantidad
+            producto.save()
+
+        # Calcular total de la venta
+        venta.total = sum(d.precio_unitario * d.cantidad for d in venta.detalles.all())
+        venta.save()
+
+        return venta

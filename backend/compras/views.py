@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework.permissions import AllowAny
 # Create your views here.
-from rest_framework import generics
+from rest_framework import generics, permissions
 from .models import Compra
-from .serializers import CompraSerializer
-
+from .serializers import CompraSerializer, VentaSerializer
+from ventas.models import Venta
 
 class CompraListCreateView(generics.ListCreateAPIView):
     queryset = Compra.objects.all().order_by('-fecha')
@@ -26,3 +26,14 @@ class CompraCreateView(generics.CreateAPIView):
 class CompraDetailView(generics.RetrieveAPIView):
     queryset = Compra.objects.all()
     serializer_class = CompraSerializer
+
+class VentaCreateView(generics.CreateAPIView):
+    queryset = Venta.objects.all()
+    serializer_class = VentaSerializer
+    permission_classes = [permissions.AllowAny]  # Si el cliente no está logueado, puedes usar JWT si quieres
+
+    # Opcional: enviar notificación al admin
+    def perform_create(self, serializer):
+        venta = serializer.save()
+        # Aquí podrías mandar evento WebSocket a la tienda
+        # channel_layer.group_send('admins', {...})

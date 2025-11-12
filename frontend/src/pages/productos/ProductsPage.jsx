@@ -52,7 +52,7 @@ const ProductsPage = () => {
               key={p.id}
               className="bg-white rounded-2xl shadow hover:shadow-lg transition-shadow overflow-hidden flex flex-col"
             >
-              <Link to={`/dashboard/product/${p.id}`}>
+              <Link to={`/product/${p.id}`}>
                 <img
                   src={p.image || "/no-image.png"}
                   alt={p.name}
