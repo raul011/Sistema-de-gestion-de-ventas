@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//raul
 class PaymentPanel extends StatelessWidget {
   final double totalPendiente;
   final double totalPagado;
