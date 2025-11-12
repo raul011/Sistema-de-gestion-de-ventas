@@ -13,24 +13,46 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mi Carrito',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Mi Carrito',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: Colors.black.withOpacity(0.8), // 👈 Ajusta opacidad
+        elevation: 0,
+
         actions: [
           if (cartService.items.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.delete_outline),
+              color: Colors.white,
               onPressed: () => _showClearCartDialog(context, cartService),
             ),
         ],
       ),
-      body: cartService.items.isEmpty
-          ? _buildEmptyCart(context)
-          : Column(
-              children: [
-                Expanded(child: _buildCartList(cartService, context)),
-                _buildSummarySection(cartService, context),
-              ],
-            ),
+      // backgroundColor: const Color(0xFF1A1A2E),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.topLeft,
+            radius: 1.5,
+            colors: [
+              Color.fromARGB(255, 28, 29, 28),
+              Color.fromARGB(255, 57, 61, 40),
+              Color.fromARGB(255, 28, 29, 28),
+            ],
+            stops: [0.0, 0.5, 1.0],
+          ),
+        ),
+        child:
+            cartService.items.isEmpty
+                ? _buildEmptyCart(context)
+                : Column(
+                  children: [
+                    Expanded(child: _buildCartList(cartService, context)),
+                    _buildSummarySection(cartService, context),
+                  ],
+                ),
+      ),
     );
   }
 
@@ -46,20 +68,23 @@ class CartScreen extends StatelessWidget {
             Icon(
               Icons.remove_shopping_cart,
               size: 80,
-              color: theme.colorScheme.onSurface.withOpacity(0.3),
+              //color: theme.colorScheme.onSurface.withOpacity(0.3),
+              color: Colors.white,
             ),
             const SizedBox(height: 24),
             Text(
               'Tu carrito está vacío',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 12),
             Text(
               'Agrega productos para comenzar',
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                //color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 32),
@@ -68,11 +93,14 @@ class CartScreen extends StatelessWidget {
               icon: const Icon(Icons.storefront_outlined),
               label: const Text('Explorar productos'),
               style: FilledButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
+                backgroundColor: const Color.fromARGB(255, 161, 14, 190),
               ),
             ),
           ],
@@ -106,12 +134,13 @@ class CartScreen extends StatelessWidget {
                     width: 80,
                     height: 80,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Image.asset(
-                      'assets/images/placeholder.png',
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
+                    errorBuilder:
+                        (_, __, ___) => Image.asset(
+                          'assets/images/placeholder.png',
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -141,12 +170,13 @@ class CartScreen extends StatelessWidget {
                         children: [
                           _buildQuantityButton(
                             icon: Icons.remove,
-                            onPressed: item.quantity > 1
-                                ? () => cartService.updateQuantity(
+                            onPressed:
+                                item.quantity > 1
+                                    ? () => cartService.updateQuantity(
                                       item.product.id,
                                       item.quantity - 1,
                                     )
-                                : null,
+                                    : null,
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -160,10 +190,11 @@ class CartScreen extends StatelessWidget {
                           ),
                           _buildQuantityButton(
                             icon: Icons.add,
-                            onPressed: () => cartService.updateQuantity(
-                              item.product.id,
-                              item.quantity + 1,
-                            ),
+                            onPressed:
+                                () => cartService.updateQuantity(
+                                  item.product.id,
+                                  item.quantity + 1,
+                                ),
                           ),
                         ],
                       ),
@@ -182,8 +213,10 @@ class CartScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     IconButton(
-                      icon: Icon(Icons.delete_outline,
-                          color: theme.colorScheme.error),
+                      icon: Icon(
+                        Icons.delete_outline,
+                        color: theme.colorScheme.error,
+                      ),
                       onPressed: () => cartService.removeItem(item.product.id),
                     ),
                   ],
@@ -196,15 +229,15 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuantityButton(
-      {required IconData icon, VoidCallback? onPressed}) {
+  Widget _buildQuantityButton({
+    required IconData icon,
+    VoidCallback? onPressed,
+  }) {
     return IconButton(
       onPressed: onPressed,
       style: IconButton.styleFrom(
         backgroundColor: Colors.grey.shade200,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.all(6),
       ),
       icon: Icon(icon, size: 18),
@@ -235,11 +268,7 @@ class CartScreen extends StatelessWidget {
             theme: theme,
           ),
           const SizedBox(height: 8),
-          _buildSummaryRow(
-            label: 'Envío:',
-            value: '\$0.00',
-            theme: theme,
-          ),
+          _buildSummaryRow(label: 'Envío:', value: '\$0.00', theme: theme),
           const Divider(height: 24),
           _buildSummaryRow(
             label: 'Total:',
@@ -249,9 +278,14 @@ class CartScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           FilledButton.icon(
-            onPressed: () => _showCheckoutDialog(context),
-            icon: const Icon(Icons.credit_card),
-            label: const Text('Proceder al pago'),
+            onPressed:
+                () => Navigator.pushNamed(
+                  context,
+                  '/metodo_pago',
+                  arguments: cartService.total,
+                ),
+            icon: const Icon(Icons.payment),
+            label: const Text('Confirmar compra'),
             style: FilledButton.styleFrom(
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
@@ -275,20 +309,24 @@ class CartScreen extends StatelessWidget {
       children: [
         Text(
           label,
-          style: isTotal
-              ? theme.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold)
-              : theme.textTheme.bodyLarge,
+          style:
+              isTotal
+                  ? theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  )
+                  : theme.textTheme.bodyLarge,
         ),
         Text(
           value,
-          style: isTotal
-              ? theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
-                )
-              : theme.textTheme.bodyLarge
-                  ?.copyWith(fontWeight: FontWeight.bold),
+          style:
+              isTotal
+                  ? theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  )
+                  : theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
         ),
       ],
     );
@@ -297,89 +335,29 @@ class CartScreen extends StatelessWidget {
   void _showClearCartDialog(BuildContext context, CartService cartService) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Vaciar carrito'),
-        content: const Text('¿Estás seguro de que quieres vaciar tu carrito?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              cartService.clearCart();
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Carrito vaciado')),
-              );
-            },
-            child: const Text('Vaciar'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showCheckoutDialog(BuildContext context) {
-    final cartService = Provider.of<CartService>(context, listen: false);
-    final theme = Theme.of(context);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar compra'),
-        content: const Text(
-            '¿Deseas proceder con el pago de los productos en tu carrito?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              final api = ApiService();
-              try {
-                final orderId = await api.createOrder(
-                  cartService.items,
-                  cartService.total,
-                  'Calle Ejemplo 123',
-                );
-
-                if (orderId != null) {
-                  final paymentSuccess = await api.createPayment(
-                    orderId,
-                    cartService.total,
-                    'card',
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Vaciar carrito'),
+            content: const Text(
+              '¿Estás seguro de que quieres vaciar tu carrito?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  cartService.clearCart();
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Carrito vaciado')),
                   );
-
-                  if (paymentSuccess) {
-                    cartService.clearCart();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('Compra realizada con éxito'),
-                        backgroundColor: theme.colorScheme.primary,
-                      ),
-                    );
-                  } else {
-                    throw Exception('Error al procesar el pago');
-                  }
-                } else {
-                  throw Exception('Error al crear la orden');
-                }
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Error: ${e.toString()}'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
-            child: const Text('Confirmar'),
+                },
+                child: const Text('Vaciar'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

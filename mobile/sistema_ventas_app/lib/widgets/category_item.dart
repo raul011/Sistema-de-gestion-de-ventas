@@ -25,8 +25,11 @@ class CategoryItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 6),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? primaryColor : Colors.grey[200],
-          borderRadius: BorderRadius.circular(20),
+          color:
+              isSelected
+                  ? primaryColor
+                  : const Color.fromARGB(255, 253, 253, 255),
+          borderRadius: BorderRadius.circular(30),
         ),
         child: Center(
           child: Text(

@@ -9,6 +9,8 @@ import 'package:sistema_ventas_app/services/cart_service.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -46,6 +48,29 @@ class HomeScreenState extends State<HomeScreen>
       curve: Curves.easeInOutQuart,
     );
     _loadData();
+    _initFCM(); //  Llamada necesaria
+  }
+
+  void _initFCM() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Request permission on iOS and web.
+    NotificationSettings settings = await messaging.requestPermission();
+    print('User granted permission: ${settings.authorizationStatus}');
+
+    // Get the device token. You would normally send this to your server.
+    final String? token = await messaging.getToken();
+    print("Firebase Messaging Token: $token");
+
+    // Listener for when the app is in the foreground.
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
   }
 
   Future<void> _startVoiceSearch() async {
@@ -164,27 +189,44 @@ class HomeScreenState extends State<HomeScreen>
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          'Mi Tienda',
+          'Boutique Juli',
           style: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 24,
-            color: theme.colorScheme.primary,
+            color: Color.fromARGB(255, 218, 20, 218),
           ),
         ),
+        backgroundColor: Colors.black.withOpacity(0.8),
         actions: [_buildCartButton(theme)],
       ),
-      body: RefreshIndicator(
-        color: theme.colorScheme.primary,
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            _buildSearchBar(theme),
-            _buildCategoriesSection(theme),
-            _buildProductsTitle(theme),
-            _buildProductsGrid(isTablet, theme),
-          ],
+      // 👇 quita el backgroundColor aquí
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment.topLeft,
+            radius: 1.5,
+            colors: [
+              Color.fromARGB(255, 28, 29, 28),
+              Color.fromARGB(255, 57, 61, 40),
+              Color.fromARGB(255, 28, 29, 28),
+            ],
+            stops: [0.0, 0.5, 1.0],
+          ),
         ),
-        onRefresh: _loadData,
+
+        child: RefreshIndicator(
+          color: theme.colorScheme.primary,
+          onRefresh: _loadData,
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              _buildSearchBar(theme),
+              _buildCategoriesSection(theme),
+              _buildProductsTitle(theme),
+              _buildProductsGrid(isTablet, theme),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -195,7 +237,11 @@ class HomeScreenState extends State<HomeScreen>
       clipBehavior: Clip.none,
       children: [
         IconButton(
-          icon: Icon(Icons.shopping_cart_outlined, size: 28),
+          icon: const Icon(
+            Icons.shopping_cart_outlined,
+            size: 28,
+            color: Colors.white,
+          ),
           onPressed: () => Navigator.pushNamed(context, '/cart'),
         ),
         if (cartService.itemCount > 0)
@@ -283,6 +329,7 @@ class HomeScreenState extends State<HomeScreen>
               'Categorías',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
+                color: const Color.fromARGB(255, 234, 234, 236),
               ),
             ),
           ),
@@ -339,6 +386,7 @@ class HomeScreenState extends State<HomeScreen>
                   : 'Todos los productos',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
+                color: const Color.fromARGB(255, 234, 234, 236),
               ),
             ),
             if (_selectedCategoryId != null ||
@@ -378,7 +426,9 @@ class HomeScreenState extends State<HomeScreen>
                     SizedBox(height: 16),
                     Text(
                       'No se encontraron productos',
-                      style: theme.textTheme.bodyLarge,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                     SizedBox(height: 16),
                     ElevatedButton.icon(
