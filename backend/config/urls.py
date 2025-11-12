@@ -41,6 +41,10 @@ urlpatterns = [
     path('api/compras/', include('compras.urls')),
     path('api/ventas/', include('ventas.urls')),
     path('api/reportes/', include('reportes.urls')),
+    path("api/credit/", include("creditos.urls")),
+    path('api/', include('tokens_dispositivos.urls')),
+
+
 ]
 
 

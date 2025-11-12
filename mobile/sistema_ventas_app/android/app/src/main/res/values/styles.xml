@@ -12,7 +12,17 @@
          running.
 
          This Theme is only used starting with V2 of Flutter's Android embedding. -->
-    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+    <style name="NormalTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+
+    <!-- Estilo específico para Stripe - CORREGIDO -->
+    <style name="StripeTransparentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item> <!-- Cambiado a false -->
+        <item name="android:backgroundDimEnabled">true</item> <!-- Cambiado a true -->
     </style>
 </resources>

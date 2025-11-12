@@ -15,9 +15,10 @@ from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 import os
@@ -26,6 +27,10 @@ SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
+
+
+FIREBASE_CREDENTIALS = BASE_DIR / "clave.json"
+FIREBASE_PROJECT_ID = "ventasboutique-e402f"
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 load_dotenv()  # carga las variables del .env
@@ -55,6 +60,8 @@ INSTALLED_APPS = [
     'orders',
     'payments',
     'reviews',
+    'creditos',
+    'tokens_dispositivos',
     'roles.apps.RolesConfig',  # <- usa la clase AppConfig aquí
     'proveedores',
     'compras',
