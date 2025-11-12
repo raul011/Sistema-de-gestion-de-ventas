@@ -26,6 +26,7 @@ class ProductCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         clipBehavior: Clip.antiAlias,
+        color: Colors.white.withOpacity(0.08), // Semi-transparente
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -44,8 +45,10 @@ class ProductCard extends StatelessWidget {
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: isAvailable ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(12),
@@ -78,6 +81,7 @@ class ProductCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: Colors.white, //
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -85,15 +89,18 @@ class ProductCard extends StatelessWidget {
                     // Categoría
                     Row(
                       children: [
-                        Icon(Icons.category_outlined,
-                            size: 12, color: Colors.grey.shade600),
+                        Icon(
+                          Icons.category_outlined,
+                          size: 12,
+                          color: const Color.fromARGB(255, 245, 244, 244),
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             product.category.name,
                             style: TextStyle(
                               fontSize: 11,
-                              color: Colors.grey.shade600,
+                              color: const Color.fromARGB(255, 247, 245, 245),
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -121,9 +128,10 @@ class ProductCard extends StatelessWidget {
                           height: 32,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: isAvailable
-                                  ? theme.colorScheme.primary
-                                  : Colors.grey.shade300,
+                              color:
+                                  isAvailable
+                                      ? theme.colorScheme.primary
+                                      : Colors.grey.shade300,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: IconButton(
@@ -131,9 +139,10 @@ class ProductCard extends StatelessWidget {
                               icon: Icon(
                                 Icons.add_shopping_cart,
                                 size: 16,
-                                color: isAvailable
-                                    ? Colors.white
-                                    : Colors.grey.shade600,
+                                color:
+                                    isAvailable
+                                        ? Colors.white
+                                        : Colors.grey.shade600,
                               ),
                               onPressed: isAvailable ? onAddToCart : null,
                             ),
@@ -154,14 +163,18 @@ class ProductCard extends StatelessWidget {
   Widget _buildProductImage() {
     return product.image != null
         ? FadeInImage.assetNetwork(
-            placeholder: 'assets/images/placeholder.png',
-            image: product.image!.startsWith('http')
-                ? product.image!
-                : '${ApiConfig.baseUrl}${product.image}',
-            fit: BoxFit.cover,
-            imageErrorBuilder: (_, __, ___) =>
-                Image.asset('assets/images/placeholder.png', fit: BoxFit.cover),
-          )
+          placeholder: 'assets/images/placeholder.png',
+          image:
+              product.image!.startsWith('http')
+                  ? product.image!
+                  : '${ApiConfig.baseUrl}${product.image}',
+          fit: BoxFit.cover,
+          imageErrorBuilder:
+              (_, __, ___) => Image.asset(
+                'assets/images/placeholder.png',
+                fit: BoxFit.cover,
+              ),
+        )
         : Image.asset('assets/images/placeholder.png', fit: BoxFit.cover);
   }
 }

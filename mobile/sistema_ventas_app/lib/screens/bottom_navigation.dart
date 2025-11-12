@@ -1,60 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:sistema_ventas_app/screens/estadistica_screen.dart';
+import 'package:sistema_ventas_app/screens/home_screen.dart';
+import 'package:sistema_ventas_app/screens/cart_screen.dart';
+import 'package:sistema_ventas_app/screens/mapa_page.dart';
+import 'package:sistema_ventas_app/screens/cuota/cuota_screen.dart';
+import 'package:sistema_ventas_app/main.dart';
 
 void main() => runApp(MaterialApp(home: BottomNavBar()));
+// La función main en bottom_navigation.dart es para probar este widget de forma aislada.
+// La función main principal de la aplicación está en lib/main.dart.
 
 class BottomNavBar extends StatefulWidget {
+  final int initialPageIndex;
+  const BottomNavBar({
+    super.key,
+    this.initialPageIndex = 2,
+  }); // Por defecto, inicia en el índice 2 (HomeScreenWithVoice)
   @override
-  _BottomNavBarState createState() => _BottomNavBarState();
+  _BottomNavBarState createState() => _BottomNavBarState(initialPageIndex);
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
   final List<Widget> _pages = [
     // aquí va tu vista
-    Center(child: Text("Página 1", style: TextStyle(fontSize: 24))),
-    Center(child: Text("Página 2", style: TextStyle(fontSize: 24))),
-    StatisticsScreen(),
-    Center(child: Text("Página 3", style: TextStyle(fontSize: 24))),
+    MapaScreen(),
+    //CartScreen(),
+    CartScreenWithVoice(),
+    //StatisticsScreen(),
+    //HomeScreen(),
+    HomeScreenWithVoice(),
+    CuotaScreen(),
     Center(child: Text("Página 4", style: TextStyle(fontSize: 24))),
   ];
 
-  int _page = 2;
+  int _page; // Se inicializará en el constructor
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+
+  // Constructor para inicializar _page con el valor pasado
+  _BottomNavBarState(this._page);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //appBar: AppBar(title: Text('Curved Navigation Bar(Flutter)')),
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
-        index: 2,
-        height: 55.0,
+        index: _page, // Usa el índice inicial proporcionado
+        height: 50.0,
         items: <Widget>[
           Icon(
-            Icons.trending_up_outlined,
-            size: 33,
-            color: Color.fromARGB(255, 110, 113, 116),
+            Icons.location_on_outlined,
+            size: 27,
+            color: Color.fromARGB(255, 245, 246, 247),
           ),
           Icon(
-            Icons.summarize,
-            size: 33,
-            color: Color.fromARGB(255, 100, 104, 107),
+            Icons.shopping_cart_outlined,
+            size: 27,
+            color: Color.fromARGB(255, 245, 246, 247),
           ),
+          Icon(Icons.home, size: 33, color: Color.fromARGB(255, 245, 246, 247)),
           Icon(
-            Icons.bar_chart,
-            size: 33,
-            color: Color.fromARGB(255, 75, 78, 80),
+            Icons.attach_money,
+            size: 27,
+            color: Color.fromARGB(255, 245, 246, 247),
           ),
-          Icon(Icons.message, size: 33, color: Color.fromARGB(255, 25, 28, 31)),
           Icon(
             Icons.perm_identity,
-            size: 33,
-            color: Color.fromARGB(255, 3, 3, 3),
+            size: 27,
+            color: Color.fromARGB(255, 245, 246, 247),
           ),
         ],
-        color: Colors.white,
-        buttonBackgroundColor: Colors.white,
-        backgroundColor: const Color(0xFF1A1A2E),
+
+        // color: Colors.white,
+        color: const Color.fromARGB(255, 56, 54, 54),
+        //buttonBackgroundColor: Colors.white,
+        //buttonBackgroundColor: const Color.fromARGB(255, 8, 211, 109),
+        buttonBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
+        //        backgroundColor: const Color.fromARGB(255, 80, 80, 83),
+        backgroundColor: const Color.fromARGB(255, 28, 29, 28),
         animationCurve: Curves.easeInOut,
         animationDuration: Duration(milliseconds: 600),
         onTap: (index) {

@@ -50,7 +50,7 @@ class PaymentDetailView(generics.RetrieveAPIView):
 stripe.api_key = settings.STRIPE_SECRET_KEY  # Debes tener esto en settings
 
 class CreatePaymentIntentView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    #permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         try:
